@@ -1,0 +1,150 @@
+#!/bin/bash
+
+# ------------------------------------
+make_links()
+{
+ln -s /home/root/4.03.04 root
+ln -s /proj/soft/JDK JDK
+ln -s /proj/soft/clhep/1.9.1.2 clhep
+ln -s /proj/soft/grace/pro grace
+ln -s /proj/soft/lcio/v01-04 lcio
+ln -s /proj/soft/G4/geant4.7.0.p01 G4
+echo "Package links were created"
+}
+
+# ------------------------------------
+cvs_checkout()
+{
+module="lcbase Leda lclib jsf physsim Jupiter Satellites Uranus"
+cvs -d /proj/soft/CVSMASTER co -P $module
+}
+
+# -----------------------------------
+# Build package
+# -----------------------------------
+build_package()
+{
+if [ -d $LCBASEDIR ] ; then 
+  cd $LCBASEDIR
+  make
+fi
+
+if [ -d $LEDAROOT ] ; then
+  cd $LEDAROOT
+  make
+fi
+
+if [ -d $LCLIBROOT ] ; then
+  cd $LCLIBROOT
+  configure
+  make install
+fi
+
+if [ -d $JSFROOT ] ; then
+  cd $JSFROOT
+  make install
+fi
+
+if [ -d $JUPITERROOT ] ; then
+  cd $JUPITERROOT
+  make
+fi
+
+if [ -d $URANUSROOT ] ; then
+  cd $URANUSROOT 
+  make
+fi
+
+if [ -d $SATELLITESROOT ] ; then
+  cd $SATELLITESROOT
+  make
+  cd $SATELLITESROOT/src/io/j42lcio
+  make
+fi
+
+}
+
+# -----------------------------------
+# Prepare JSF_QuickSim examples
+# -----------------------------------
+make_jsf_quicksim_examples()
+{
+  if [ -d $JSFROOT ] ; then
+    cp -a $JSFROOT/example/SimTools .
+    mv SimTools  JSF_QuickSim
+    cd JSF_QuickSim
+    rm -r CVS
+
+    cd exam01 
+    rm -r CVS
+    cp -p .rootrc dot.rootrc
+    jsf -b -q --maxevt=1000 gui.C > jobout 2>&1 
+  
+    cd ../exam02
+    rm -r CVS
+    cp -p .rootrc dot.rootrc
+    xmkmf -a
+    make
+    jsf -b -q --maxevt=1000 gui.C > jobout 2>&1 
+
+    cd ../exam03
+    rm -r CVS
+    cp -p .rootrc dot.rootrc
+    jsf -b -q --maxevt=1000 gui.C > jobout 2>&1 
+
+    cd ../exam04
+    rm -r CVS
+    cp -p .rootrc dot.rootrc
+  fi
+
+}
+
+# -----------------------------------
+# Prepare Satellites examples
+# -----------------------------------
+make_satellites_examples()
+{
+  if [ -d $SATELLITESROOT ] ; then
+    cp -a $SATELLITESROOT/examples/SimTools .
+    mv SimTools  Satellites
+    cd Satellites
+    rm -r CVS
+
+    for f in exam01 exam02 exam03 exam04 exam05 exam06 exam07 ; do
+      cd $f
+      rm -r CVS
+      cp -p .rootrc dot.rootrc
+    done
+
+  fi
+}
+# -----------------------------------
+# Prepare Jupiter examples
+# -----------------------------------
+make_jupiter_examples()
+{
+  if [ -d $JUPITERROOT ] ; then
+    cp -a $JUPITERROOT/examples/exam01 .
+    mkdir Jupiter
+    mv exam01 Jupiter
+    cd Jupiter
+    rm -r CVS
+
+    cd exam01
+    rm -r CVS
+
+  fi
+}
+
+
+# -----------------------------------
+# Main part to build package
+# -----------------------------------
+
+while [ $# -ne 0 ]
+do
+ case "$1" in
+  *) $1;;
+ esac 
+ shift
+done

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+gnome-terminal --zoom=1.5 \
+    --working-directory=jsf \
+    -e "jsf gui.C"
+
+

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+gnome-terminal --zoom=1.5 \
+    --working-directory=jsf/ex1
+
+
