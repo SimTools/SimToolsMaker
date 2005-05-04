@@ -44,7 +44,7 @@ export CLHEP_INCLUDE_DIR=$CLHEP_BASE_DIR/include
 ##
 #######################################################
 export LC_RELEASE=1.11
-export LC_RELEASE_DIR=$SIMTOOLS_DIR/$LC_RELEASE
+export LC_RELEASE_DIR=/proj/soft/Release/$LC_RELEASE
 export ROOTSYS=$LC_RELEASE_DIR/root
 export G4INSTALL=$LC_RELEASE_DIR/G4
 export LCIO=$LC_RELEASE_DIR/lcio

@@ -136,6 +136,16 @@ make_jupiter_examples()
   fi
 }
 
+# -----------------------------------
+# Build release
+# -----------------------------------
+make_release()
+{
+  make_links
+  cvs_checkout
+  . setup.bash
+  build_package
+}
 
 # -----------------------------------
 # Main part to build package
