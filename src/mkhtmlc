@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+
+$searchDir="$ENV{JSFROOT}/src  $ENV{LEDAROOT}/src $ENV{URANUSROOT}/src $ENV{SATELLITESROOT}/src ";
+open(FOUT,"> makeclass.C ");
+
+print FOUT "int makeclass() {\n";
+
+open(FIN,"grep -hr \"#pragma\" $searchDir | grep C++ |");
+while( <FIN> ) {
+  next if ( $_ =~ /^\/\// ) ;
+  @cname=split(" ");
+  $classname=$cname[4];
+  $classname=~s/;//g;
+  $classname=~s/\+//g;
+  $classname=~s/\-//g;
+  next if ( $classname =~ /^U4CDC/ );
+  next if ( $classname =~ /^S4CDC/ );
+  next if ( $classname =~ /^S4Baby/ );
+  next if ( $classname =~ /^Baby/ );
+  
+  print FOUT "   html.MakeClass(\"",$classname,"\");\n";
+  print $classname,"\n";
+}
+
+print FOUT "}\n";
+
+close(FOUT);
+close(FIN);
+
+
