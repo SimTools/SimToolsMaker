@@ -17,6 +17,7 @@ int html()
   gROOT->LoadMacro("$(SATELLITESROOT)/macros/S4Macros.C");
   gROOT->ProcessLine("ConstructS4Modules();");
 
+  gSystem->Load("libAnlib.so");
   gSystem->Load("libJSFME2SHGenerator.so");
   gSystem->Load("libJSFZVTOP3.so");
   gSystem->Load("libTHerwig.so");

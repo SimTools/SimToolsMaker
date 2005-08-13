@@ -13,8 +13,8 @@ SimToolsSrcDir=$(TMPDIR)/SimTools-$(SimToolsVersion)-src
 CVS_CHECKOUT_CMD = cvs -q -d /proj/soft/CVSMASTER co -P 
 CVS_EXPORT_CMD = cvs -q -d /proj/soft/CVSMASTER export -r SimTools-1-02
 
-# all: makefiles checkout build examples bintar srctar
-all: examples bintar srctar
+all: makefiles checkout build examples bintar srctar
+# all: examples bintar srctar
 
 bintar:
 	( cd $(SimToolsDir) && cp -rp tools $(SimToolsBinDir) )
@@ -50,13 +50,22 @@ srctar:
 	  SimTools-$(SimToolsVersion)-src ) 
 	> $(TMPDIR)/jobout.srctar 
 
-examples: jsf_quicksim_example satellites_example jupiter_example
+examples: ../SimTools/build_all jsf_quicksim_example satellites_example jupiter_example
 
-html: 
+../SimTools/build_all: build_all 
+	cp -p build_all ../SimTools
+
+html: ../SimTools/html.C ../SimTools/html_script.C
 	( cd $(SimToolsDir) && source setup-build.bash && \
 	  cd docs && \
 	  jsf -b -q ../html.C && \
 	  jsf -b -q ../html_script.C ) > $(TMPDIR)/jobout.html 2>&1 
+
+../SimTools/html.C: html.C
+	cp html.C ../SimTools
+
+../SimTools/html_script.C: html_script.C
+	cp html_script.C ../SimTools
 
 satellites_example:
 	( cd $(SimToolsDir) && \
