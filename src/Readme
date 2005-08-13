@@ -1,5 +1,5 @@
-SimTools-1-01
-Released: 3-May-2005
+SimTools-1-02
+Released: 13-Aug-2005
 
 SimTools package containes pre-compiled binaries of JSF, Jupiter, Satellites 
 and other packages related to them.  This package is prepared to provide
@@ -8,7 +8,7 @@ underway, there may be a log of bugs. So please use tools with care and
 consider this release as a alpha release.
 
 To get started, 
-  1.  Install ROOT.  version 4.03.04.
+  1.  Install ROOT.  version 4.04.02.
   2.  Edit setup.bash properly to meet your environment
   3.  Do
        source setup.bash
@@ -20,7 +20,7 @@ Source code of tools are maintained in our CVS repository.
 Note that development of our code is very fast and please update your 
 binaries properly.
 
-Please forward your comments to akiya.miyamoto@kek.jp.  We appriciate your 
+Please forward your comments to soft-quetions@ilcphys.kek.jp.  We appriciate your 
 feedbacks in addvance.
 
-3-May-2005
+13-Aug-2005

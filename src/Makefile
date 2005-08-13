@@ -1,6 +1,6 @@
 
 SimToolsDir=$(subst src,SimTools,$(shell pwd))
-SimToolsVersion=1-01
+SimToolsVersion=1-02
 
 PACKAGES = lcbase Leda lclib jsf physsim Jupiter Satellites Uranus
 TMPDIR   = $(SimToolsDir)/../tmp
@@ -11,7 +11,7 @@ SimToolsSrcDir=$(TMPDIR)/SimTools-$(SimToolsVersion)-src
 
 # PACKAGES = lcbase Leda 
 CVS_CHECKOUT_CMD = cvs -q -d /proj/soft/CVSMASTER co -P 
-CVS_EXPORT_CMD = cvs -q -d /proj/soft/CVSMASTER export -r SimTools-1-01
+CVS_EXPORT_CMD = cvs -q -d /proj/soft/CVSMASTER export -r SimTools-1-02
 
 # all: makefiles checkout build examples bintar srctar
 all: examples bintar srctar

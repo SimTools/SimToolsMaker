@@ -26,7 +26,7 @@ export CLHEP_INCLUDE_DIR=$CLHEP_BASE_DIR/include
 #########################################################
 ## Setup to build SimTools binary at jlclogin
 #########################################################
-export LC_RELEASE=1.11
+export LC_RELEASE=1.16
 export SIMTOOLS_DIR=`pwd`/../SimTools
 export LC_RELEASE_DIR=$SIMTOOLS_DIR/tools
 export ROOTSYS=/proj/soft/Release/$LC_RELEASE/root
@@ -43,7 +43,7 @@ export CLHEP_INCLUDE_DIR=$CLHEP_BASE_DIR/include
 ##  Setup for JLCLOGIN
 ##
 #######################################################
-export LC_RELEASE=1.11
+export LC_RELEASE=1.16
 export LC_RELEASE_DIR=/proj/soft/Release/$LC_RELEASE
 export ROOTSYS=$LC_RELEASE_DIR/root
 export G4INSTALL=$LC_RELEASE_DIR/G4
@@ -65,7 +65,7 @@ export KFLIBROOT=$LC_RELEASE_DIR/physsim
 export JUPITERROOT=$LC_RELEASE_DIR/Jupiter
 export SATELLITESROOT=$LC_RELEASE_DIR/Satellites
 export URANUSROOT=$LC_RELEASE_DIR/Uranus
-export SOSYMLINK=false
+export SOSYMLINK=true
 
 
 ##### Geatn4 setup ##############
