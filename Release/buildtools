@@ -1,0 +1,140 @@
+#!/bin/bash
+
+# ------------------------------------
+checkout()
+{
+
+cvsroot=$1
+setup=$2
+. $setup
+echo "SimTools package is prepared in $LC_RELEASE_DIR "
+mkdir -p $LC_RELEASE_DIR
+
+module="lcbase Leda lclib jsf physsim Jupiter Satellites Uranus"
+cvs -d $cvsroot co -P $module
+}
+
+# -----------------------------------
+# Erase
+# -----------------------------------
+erase()
+{
+  echo "All libraries and files there will be deleted"
+  rm -rf lcbase Leda lclib jsf physsim Jupiter Satellites Uranus
+}
+
+# -----------------------------------
+# Build package
+# -----------------------------------
+build()
+{
+setup=$1
+make_j42lcio=$2
+
+. $setup
+if [ -d $LCBASEDIR ] ; then 
+  cd $LCBASEDIR
+  make
+fi
+
+if [ -d $LEDAROOT ] ; then
+  cd $LEDAROOT
+  make
+fi
+
+if [ -d $LCLIBROOT ] ; then
+  cd $LCLIBROOT
+  configure
+  make install
+fi
+
+if [ -d $JSFROOT ] ; then
+  cd $JSFROOT
+  make install
+fi
+
+if [ -d $JUPITERROOT ] ; then
+  cd $JUPITERROOT
+  make
+fi
+
+if [ -d $URANUSROOT ] ; then
+  cd $URANUSROOT 
+  make
+fi
+
+if [ -d $SATELLITESROOT ] ; then
+  cd $SATELLITESROOT
+  make
+  if [ $make_j42lcio == 1 ] ; then
+    cd $SATELLITESROOT/src/io/j42lcio
+    make
+  fi
+fi
+
+}
+
+help()
+{
+cat <<EOF
+--------------------------------------------------------
+buildtools: Download SimTools from CVS and build library
+--------------------------------------------------------
+Usage:  buildtools [opt] cmd 
+  cmd is mandatory and should be one of following"
+    c[heckout] : Checkout files from CVS
+    b[uild]    : build library 
+    a[ll]      : do checkout and build 
+    erase      : erase all files in library directories
+   ( characters in [ ] can be omitted. )
+
+  [opt] is optional parameters
+    -cvsroot CVSROOT : CVSROOT from which the lates code is downloaded
+              default CVSROOT is /proj/soft/CVSMASTER
+    -setup setup_file : A file to be used to define environment parameters
+              default setup file name is setup.bash
+    -disable-j42lcio  : Does not make j42lcio library
+              default is to build j42lcio library     
+
+Example:
+  ./buildtools all
+    This will checkout all files and build library
+
+(note)
+  All libraries are created in the directory defined by 
+  LC_RELEASE_DIR, which should be defined in setup_file
+EOF
+
+}
+
+# -----------------------------------
+# Main part to build package
+# -----------------------------------
+
+cvsroot=/proj/soft/CVSMASTER
+setup=setup.bash
+make_j42lcio=1
+
+passone=0
+while [ $# -ne 0 ]
+do
+ case "$1" in
+  -cvsroot) shift ; cvsroot=$1 ;;
+  -setup) shift ; setup=$1 ;;
+  -disable_j42lcio)  make_j42lcio=0 ;;
+  c*) checkout $cvsroot $setup ;;
+  b*) build $setup $make_j42lcio;;
+  a*) checkout $cvsroot $setup ;
+      build $setup $make_j42lcio ;;
+  erase) erase ;;
+  h*) help ;;
+  *) help ;;
+ esac 
+ shift
+ let passone=$passone+1
+done
+
+if [ $passone -le 0 ] ; then 
+   help 
+fi
+
