@@ -1,31 +1,45 @@
 JSFSteer *gJSF=0;
-THtml html; 
+THtml myhtml;
 
 int html()
 {
 //$id$
 
-  gEnv->SetValue("Root.Html.Root",
-                 "http://www-jlc.kek.jp/subg/offl/jsf/RootHtmlDoc/html");
-  gEnv->SetValue("Root.Html.HomePage",
-                 "http://www-jlc.kek.jp/subg/offl/jsf/RootHtmlDoc/html");
+//  gEnv->SetValue("Root.Html.Root",
+//                 "http://www-jlc.kek.jp/subg/offl/jsf/RootHtmlDoc/html");
+//  gEnv->SetValue("Root.Html.HomePage",
+//                 "http://www-jlc.kek.jp/subg/offl/jsf/RootHtmlDoc/html");
 
   jsf  = new JSFSteer();
   gJSF = jsf;
   gSystem->Load("libJSFGUI.so");
 
-  gROOT->LoadMacro("$(SATELLITESROOT)/macros/S4Macros.C");
+  gSystem->Load("libS4Utils.so");
+  gSystem->Load("libAnlib.so");
+  //  gROOT->LoadMacro("$(SATELLITESROOT)/macros/S4Macros.C");
   gROOT->ProcessLine("ConstructS4Modules();");
 
-  gSystem->Load("libAnlib.so");
   gSystem->Load("libJSFME2SHGenerator.so");
   gSystem->Load("libJSFZVTOP3.so");
   gSystem->Load("libTHerwig.so");
   gSystem->Load("libS4CTMCTruth.so");
   gSystem->Load("libJSFAnlib.so"); 
+    LoadLibraryWithMessage("libS4CALSmallClusterMaker.so");
+    LoadLibraryWithMessage("libS4CALClusterMaker.so");
+    LoadLibraryWithMessage("libS4CALRealClusterMaker.so");
+    LoadLibraryWithMessage("libJSFReadStdHep.so");
+    LoadLibraryWithMessage("libJSFFromLCIO.so");
+    LoadLibraryWithMessage("libS4BCALMCTruth.so");
+    LoadLibraryWithMessage("libS4FCALMCTruth.so");
+    LoadLibraryWithMessage("libJSFJupiter.so");
+    LoadLibraryWithMessage("libS4HISTMCTruth.so");
+    LoadLibraryWithMessage("libS4MUDMCTruth.so");
+    LoadLibraryWithMessage("libS4CALClusterMaker.so");
+
   gROOT->LoadMacro("makeclass.C");
 
-  html.SetOutputDir("htmldoc");
+  myhtml.SetProductName("SimTools package");
+  myhtml.SetOutputDir("htmldoc");
   TString srcdir("./:$(JSFROOT)/src/kern:$(JSFROOT)/include");
   srcdir += ":$(ROOTSYS)/src:$(JSFROOT)/src/generators/bases/src";
   srcdir += ":$(JSFROOT)/src/tools";
@@ -33,6 +47,7 @@ int html()
   srcdir += ":$(JSFROOT)/src/opts/Anlib/src:$(JSFROOT)/src/opts/lcio";
   srcdir += ":$(JSFROOT)/src/opts/stdhep:$(JSFROOT)/src/opts/zvtop/src";
   srcdir += ":$(JSFROOT)/src/opts/zvtop/example";
+  srcdir += ":$(JSFROOT)/src/generators/bases";
   srcdir += ":$(JSFROOT)/src/generators/bsgen:$(JSFROOT)/src/generators/jsfgen";
   srcdir += ":$(JSFROOT)/src/generators/herwig:$(JSFROOT)/src/generators/pythia6";
   srcdir += ":$(JSFROOT)/src/generators/me2shgen";
@@ -46,14 +61,21 @@ int html()
 
 
   srcdir += ":$(SATELLITESROOT)/src/io/j42lcio:$(SATELLITESROOT)/src/io/jsfj4/kern";
+  srcdir += ":$(SATELLITESROOT)/src/io/jsfj4/jupiter:$(SATELLITESROOT)/src/io/jsfj4/lcio";
+  srcdir += ":$(SATELLITESROOT)/src/io/mctruth/bcal:$(SATELLITESROOT)/src/io/mctruth/fcal";
   srcdir += ":$(SATELLITESROOT)/src/io/mctruth/cal:$(SATELLITESROOT)/src/io/mctruth/cdc";
   srcdir += ":$(SATELLITESROOT)/src/io/mctruth/ct:$(SATELLITESROOT)/src/io/mctruth/it";
   srcdir += ":$(SATELLITESROOT)/src/io/mctruth/kern:$(SATELLITESROOT)/src/io/mctruth/mud";
   srcdir += ":$(SATELLITESROOT)/src/io/mctruth/vtx:$(SATELLITESROOT)/src/io/mctruth/tpc";
   srcdir += ":$(SATELLITESROOT)/src/io/mctruth/gen";
+  srcdir += ":$(SATELLITESROOT)/src/io/mctruth/hist";
   srcdir += ":$(SATELLITESROOT)/src/metis/cal/analysis";
   srcdir += ":$(SATELLITESROOT)/src/metis/cal/clustermaker";
   srcdir += ":$(SATELLITESROOT)/src/metis/cal/hitmaker";
+  srcdir += ":$(SATELLITESROOT)/src/metis/cal/realclustermaker";
+  srcdir += ":$(SATELLITESROOT)/src/metis/cal/smallclustermaker";
+
+
   srcdir += ":$(SATELLITESROOT)/src/metis/cdc/analysis";
   srcdir += ":$(SATELLITESROOT)/src/metis/cdc/hitmaker";
   srcdir += ":$(SATELLITESROOT)/src/metis/hybt/hybtrackmaker";
@@ -95,14 +117,18 @@ int html()
   
 
   srcdir += ":$(LCBASEDIR)/include:$(LEDAROOT)/src";  
-  html.SetSourceDir(srcdir.Data());
+
+  myhtml.SetSourceDir(srcdir.Data());
 
 // JSFclass
+
+  std::cerr << " html source directory has been set.  Will run makeclass"
+	    << std::endl;
 
   gROOT->ProcessLine("makeclass();");
 
 
-   html.MakeIndex();
+   myhtml.MakeIndex();
 
    Char_t *cmd="cd htmldoc ; mv USER_Index.html JSFMain_Index.html";
    gSystem->Exec(cmd);
@@ -112,10 +138,11 @@ int html()
   char *cname[][2]={ {"../macro/gui.C","Main script for JSF"},
    {"../macro/GUIMainMacro.C","Main script for JSF"},
    {"../macro/InitPythia.C","Set Parameter of Pythia Generator"},
-   {"../examples/JSF_QuickSim/exam01/UserAnalysis.C","QuickSim/Example01"}};
+   {"$JSFROOT/example/SimTools/exam01/UserAnalysis.C","QuickSim/Example01"}};
+ //   {"../examples/JSF_QuickSim/exam01/UserAnalysis.C","QuickSim/Example01"}};
 
   for(Int_t i=0;i<4;i++) {
-    html.Convert(cname[i][0], cname[i][1], "htmldoc/scripts");
+    myhtml.Convert(cname[i][0], cname[i][1], "htmldoc/scripts");
   }
 
 }

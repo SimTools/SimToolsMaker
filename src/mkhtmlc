@@ -5,9 +5,11 @@ open(FOUT,"> makeclass.C ");
 
 print FOUT "int makeclass() {\n";
 
-open(FIN,"grep -hr \"#pragma\" $searchDir | grep C++ |");
+open(FIN,"grep -Hhr \"#pragma\" $searchDir | grep C++ |");
 while( <FIN> ) {
-  next if ( $_ =~ /^\/\// ) ;
+ ($fname,$line)=split(":");
+ next if ( $fname =~ /template/ );
+  next if ( $line =~ /^\/\// ) ;
   @cname=split(" ");
   $classname=$cname[4];
   $classname=~s/;//g;
@@ -16,9 +18,16 @@ while( <FIN> ) {
   next if ( $classname =~ /^U4CDC/ );
   next if ( $classname =~ /^S4CDC/ );
   next if ( $classname =~ /^S4Baby/ );
+  next if ( $classname =~ /^U4Baby/ );
   next if ( $classname =~ /^Baby/ );
+  next if ( $classname =~ /^Baby/ );
+  next if ( $classname =~ /JIM/ );
+  next if ( $classname =~ /VUserAnalysis/ );
+  next if ( $classname =~ /UserAnalysis/ );
+  next if ( $classname =~ /U4VAnalysis/ );
+  next if ( $classname =~ /JSFHelixErrorMatrix_u/ );
   
-  print FOUT "   html.MakeClass(\"",$classname,"\");\n";
+  print FOUT "   myhtml.MakeClass(\"",$classname,"\");\n";
   print $classname,"\n";
 }
 
