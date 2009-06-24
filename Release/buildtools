@@ -1,5 +1,11 @@
 #!/bin/bash
-
+#
+#  buildtools
+#  A script to build SimTools library
+#  How to use this command is obtained by a command
+#  buildtools help
+#
+#
 # ------------------------------------
 checkout()
 {
@@ -9,8 +15,17 @@ setup=$2
 . $setup
 echo "SimTools package is prepared in $LC_RELEASE_DIR "
 mkdir -p $LC_RELEASE_DIR
-
+cd $LC_RELEASE_DIR
 module="lcbase Leda lclib jsf physsim Jupiter Satellites Uranus"
+for dir in $module ; do
+  if [ -x $dir ] ; then
+    echo "Directory $LC_RELEASE_DIR/$dir already exists"
+    echo "erase directory before using checkout "
+    exit 
+  fi  
+done
+
+
 cvs -d $cvsroot co -P $module
 }
 
